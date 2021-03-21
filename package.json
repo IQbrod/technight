@@ -1,0 +1,20 @@
+{
+    "name": "technight",
+    "version": "1.0.0",
+    "description": "A serverless template application",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/IQbrod/technight"
+    },
+    "scripts": {
+        "serverless": "serverless",
+        "serverless:deploy": "serverless deploy"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "node": "^12.0.0",
+        "serverless": "2.30.3"
+    },
+    "author": "IQbrod",
+    "license": "MIT"
+}

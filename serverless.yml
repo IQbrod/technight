@@ -1,0 +1,22 @@
+service: technight-tutorial
+
+frameworkVersion: "2.30.3"
+
+provider:
+  name: aws
+  region: eu-west-3
+  stage: dev
+  runtime: nodejs12.x
+  # Deprecation purpose
+  lambdaHashingVersion: "20201221"
+  apiGateway:
+    shouldStartNameWithService: true
+
+functions:
+  dogSubmission:
+    handler: ./src/index.get
+    description: Get dogs
+    events:
+      - http:
+          path: dogs
+          method: get
