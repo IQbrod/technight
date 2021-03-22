@@ -2,6 +2,10 @@ service: technight-tutorial
 
 frameworkVersion: "2.30.3"
 
+custom:
+  dev:
+    DynamoTableName: Dogs
+
 provider:
   name: aws
   region: eu-west-3
@@ -11,12 +15,49 @@ provider:
   lambdaHashingVersion: "20201221"
   apiGateway:
     shouldStartNameWithService: true
+  # Context
+  environment:
+    DOGS_TABLE: ${self:custom.dev.DynamoTableName}
+  # Global Permissions
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "*"
 
 functions:
   dogSubmission:
-    handler: ./src/index.get
-    description: Get dogs
+    handler: ./dist/index.submit
+    description: Submit a dog
     events:
       - http:
-          path: dogs
+          path: v1/dogs
+          method: post
+  dogRequest:
+    handler: ./dist/index.get
+    description: Get a specific dog
+    events:
+      - http:
+          path: v1/dogs/{id}
           method: get
+
+resources:
+  Resources:
+    CandidatesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:custom.dev.DynamoTableName}
